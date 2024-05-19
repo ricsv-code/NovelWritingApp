@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NovelWritingAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43e158be2d3f4516ce29718cf75bae1dabd2dce0")]
 [assembly: System.Reflection.AssemblyProductAttribute("NovelWritingAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NovelWritingAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
