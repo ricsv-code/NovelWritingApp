@@ -1,0 +1,257 @@
+﻿@page "/"
+@using NovelWritingApp.Shared.Models
+@using NovelWritingApp.Shared.Utilities
+@using NovelWritingApp.Components
+@inject NovelService NovelService
+@inject ChapterService ChapterService
+@inject CharacterService CharacterService
+
+<div class="workshop-container">
+    <div class="novel-title">
+        @if (isEditingTitle)
+        {
+            <input type="text" @bind="CurrentNovel.Title" />
+            <button @onclick="SaveTitle">Save</button>
+            <button @onclick="CancelEditTitle">Cancel</button>
+        }
+        else
+        {
+            <h1>@CurrentNovel?.Title</h1>
+            <button @onclick="EditTitle">Edit</button>
+        }
+    </div>
+
+    <div class="main-content">
+        <div class="sidebar">
+            @if (CurrentNovel != null)
+            {
+                <h2>Chapters</h2>
+                <ul>
+                    @foreach (var chapter in CurrentNovel.Chapters)
+                    {
+                        <li>
+                            @if (chapter == SelectedChapter && isEditingChapter)
+                            {
+                                <input type="text" @bind="chapter.Title" />
+                                <textarea @bind="chapter.ChapSynopsis"></textarea>
+                                <button @onclick="SaveChapter">Save</button>
+                                <button @onclick="CancelEditChapter">Cancel</button>
+                            }
+                            else
+                            {
+                                <span @onclick="() => SelectChapter(chapter)">@chapter.Title</span>
+                                @if (chapter == SelectedChapter)
+                                {
+                                    <button @onclick="EditChapter">Edit</button>
+                                }
+                            }
+                        </li>
+                    }
+                </ul>
+                <button @onclick="CreateChapter">Create Chapter</button>
+
+                <h2>Characters</h2>
+                <ul>
+                    @foreach (var character in CurrentNovel.Characters)
+                    {
+                        <li>
+                            @if (character == SelectedCharacter && isEditingCharacter)
+                            {
+                                <input type="text" @bind="character.Name" />
+                                <textarea @bind="character.Description"></textarea>
+                                <textarea @bind="character.Motivations"></textarea>
+                                <textarea @bind="character.CharSynopsis"></textarea>
+                                <button @onclick="SaveCharacter">Save</button>
+                                <button @onclick="CancelEditCharacter">Cancel</button>
+                            }
+                            else
+                            {
+                                <span @onclick="() => SelectCharacter(character)">@character.Name</span>
+                                @if (character == SelectedCharacter)
+                                {
+                                    <button @onclick="EditCharacter">Edit</button>
+                                }
+                            }
+                        </li>
+                    }
+                </ul>
+                <button @onclick="CreateCharacter">Create Character</button>
+            }
+        </div>
+
+        <div class="chapter-content">
+            @if (SelectedChapter != null)
+            {
+                <h3>@SelectedChapter.Title</h3>
+                <textarea @bind="chapterContent" rows="20" cols="80"></textarea>
+                <button @onclick="SaveChapterContent">Save</button>
+            }
+            else
+            {
+                <p>Please select a chapter to edit its content.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private Novel CurrentNovel;
+    private Chapter SelectedChapter;
+    private Character SelectedCharacter;
+    private bool isEditingTitle = false;
+    private bool isEditingChapter = false;
+    private bool isEditingCharacter = false;
+    private string chapterContent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CreateNovelAsync();
+    }
+
+    private async Task CreateNovelAsync()
+    {
+        try
+        {
+            var newNovel = new NovelDTO
+                {
+                    Title = "New Novel",
+                    CreationDate = DateTime.Now,
+                    LastModified = DateTime.Now
+                };
+
+            CurrentNovel = await NovelService.AddNovelAsync(newNovel);
+
+            SelectedChapter = CurrentNovel.Chapters.FirstOrDefault();
+            if (SelectedChapter != null)
+            {
+                await LoadChapterContent();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error creating novel: {ex.Message}");
+        }
+    }
+
+    private void EditTitle()
+    {
+        isEditingTitle = true;
+    }
+
+    private async Task SaveTitle()
+    {
+        isEditingTitle = false;
+        CurrentNovel.LastModified = DateTime.Now;
+        await NovelService.UpdateNovelAsync(CurrentNovel.MapToDTO());
+        Console.WriteLine("Title saved successfully.");
+    }
+
+    private void CancelEditTitle()
+    {
+        isEditingTitle = false;
+    }
+
+    private void SelectChapter(Chapter chapter)
+    {
+        SelectedChapter = chapter;
+        isEditingChapter = false;
+        LoadChapterContent();
+    }
+
+    private void EditChapter()
+    {
+        isEditingChapter = true;
+    }
+
+    private async Task SaveChapter()
+    {
+        isEditingChapter = false;
+        CurrentNovel.LastModified = DateTime.Now;
+        await ChapterService.UpdateChapterAsync(SelectedChapter.MapToDTO());
+        Console.WriteLine("Chapter saved successfully.");
+    }
+
+    private void CancelEditChapter()
+    {
+        isEditingChapter = false;
+    }
+
+    private void SelectCharacter(Character character)
+    {
+        SelectedCharacter = character;
+        isEditingCharacter = false;
+    }
+
+    private void EditCharacter()
+    {
+        isEditingCharacter = true;
+    }
+
+    private async Task SaveCharacter()
+    {
+        isEditingCharacter = false;
+        CurrentNovel.LastModified = DateTime.Now;
+        await CharacterService.UpdateCharacterAsync(SelectedCharacter.MapToDTO());
+        Console.WriteLine("Character saved successfully.");
+    }
+
+    private void CancelEditCharacter()
+    {
+        isEditingCharacter = false;
+    }
+
+    private async Task LoadChapterContent()
+    {
+        if (SelectedChapter != null)
+        {
+            chapterContent = await ChapterService.GetChapterContentAsync(SelectedChapter.ContentFilePath);
+        }
+    }
+
+    private async Task SaveChapterContent()
+    {
+        if (SelectedChapter != null)
+        {
+            await ChapterService.UpdateChapterContentAsync(SelectedChapter.ChapterId, chapterContent);
+            Console.WriteLine("Chapter content saved.");
+        }
+    }
+
+    private async Task CreateChapter()
+    {
+        try
+        {
+            var newChapter = new ChapterDTO
+                {
+                    NovelId = CurrentNovel.NovelId
+                };
+
+            var createdChapter = await ChapterService.CreateChapterAsync(newChapter);
+            CurrentNovel.Chapters.Add(createdChapter.MapToEntity());
+            SelectChapter(CurrentNovel.Chapters.Last());
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error creating chapter: {ex.Message}");
+        }
+    }
+
+    private async Task CreateCharacter()
+    {
+        try
+        {
+            var newCharacter = new CharacterDTO
+                {
+                    NovelId = CurrentNovel.NovelId
+                };
+
+            var createdCharacter = await CharacterService.CreateCharacterAsync(newCharacter);
+            CurrentNovel.Characters.Add(createdCharacter.MapToEntity());
+            SelectCharacter(CurrentNovel.Characters.Last());
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error creating character: {ex.Message}");
+        }
+    }
+}

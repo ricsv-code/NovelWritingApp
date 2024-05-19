@@ -1,0 +1,11 @@
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\bin\Debug\net8.0\NovelWritingApp.Shared.deps.json
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\bin\Debug\net8.0\NovelWritingApp.Shared.dll
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\bin\Debug\net8.0\NovelWritingApp.Shared.pdb
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\NovelWritingApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\NovelWritingApp.Shared.AssemblyInfoInputs.cache
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\NovelWritingApp.Shared.AssemblyInfo.cs
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\NovelWritingApp.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\NovelWritingApp.Shared.dll
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\refint\NovelWritingApp.Shared.dll
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\NovelWritingApp.Shared.pdb
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp.Shared\obj\Debug\net8.0\ref\NovelWritingApp.Shared.dll

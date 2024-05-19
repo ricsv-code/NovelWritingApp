@@ -1,0 +1,28 @@
+﻿@using NovelWritingApp.Shared.Models
+@using NovelWritingApp.Shared.Utilities
+@inject NovelService NovelService
+@inject ChapterService ChapterService
+@inject CharacterService CharacterService
+
+<div class="character-detail">
+    @if (SelectedCharacter != null)
+    {
+        <h2>@SelectedCharacter.Name</h2>
+        <textarea @bind="SelectedCharacter.Description"></textarea>
+        <textarea @bind="SelectedCharacter.Motivations"></textarea>
+        <textarea @bind="SelectedCharacter.CharSynopsis"></textarea>
+        <button @onclick="SaveCharacterDetails">Save</button>
+    }
+</div>
+
+@code {
+    [Parameter] public Character SelectedCharacter { get; set; }
+
+    private async Task SaveCharacterDetails()
+    {
+        if (SelectedCharacter != null)
+        {
+            await CharacterService.UpdateCharacterAsync(SelectedCharacter.MapToDTO());
+        }
+    }
+}

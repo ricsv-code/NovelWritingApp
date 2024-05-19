@@ -1,0 +1,92 @@
+﻿@using NovelWritingApp.Shared.Models
+@using NovelWritingApp.Shared.Utilities
+@inject ChapterService ChapterService
+@inject CharacterService CharacterService
+
+<div class="sidebar-container">
+    <div class="column">
+        <h3>Chapters:</h3>
+        <ul>
+            @if (CurrentNovel?.Chapters != null && CurrentNovel.Chapters.Any())
+            {
+                @foreach (var chapter in CurrentNovel.Chapters)
+                {
+                    <li class="chapter-item @(chapter == SelectedChapter ? "selected" : "")" @onclick="() => OnChapterSelected.InvokeAsync(chapter)">
+                        @chapter.Title
+                    </li>
+                }
+            }
+            else
+            {
+                <p>No chapters available.</p>
+            }
+        </ul>
+        <button @onclick="AddNewChapter">Add New Chapter</button>
+    </div>
+
+    <div class="column">
+        <h3>Characters:</h3>
+        <ul>
+            @if (CurrentNovel?.Characters != null && CurrentNovel.Characters.Any())
+            {
+                @foreach (var character in CurrentNovel.Characters)
+                {
+                    <li class="character-item @(character == SelectedCharacter ? "selected" : "")" @onclick="() => OnCharacterSelected.InvokeAsync(character)">
+                        @character.Name
+                    </li>
+                }
+            }
+            else
+            {
+                <p>No characters available.</p>
+            }
+        </ul>
+        <button @onclick="AddNewCharacter">Add New Character</button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public Novel CurrentNovel { get; set; }
+    [Parameter] public EventCallback<Chapter> OnChapterSelected { get; set; }
+    [Parameter] public EventCallback<Character> OnCharacterSelected { get; set; }
+    private Chapter SelectedChapter;
+    private Character SelectedCharacter;
+
+    private async Task AddNewChapter()
+    {
+        var newChapter = new ChapterDTO
+            {
+                Title = "New Chapter",
+                NovelId = CurrentNovel.NovelId,
+                ChapSynopsis = "Synopsis of new chapter",
+                ContentFilePath = $"path/to/chapter_{Guid.NewGuid()}.txt"
+            };
+
+        var createdChapterDto = await ChapterService.CreateChapterAsync(newChapter);
+        var createdChapter = createdChapterDto.MapToEntity();
+
+        CurrentNovel.Chapters.Add(createdChapter);
+        await OnChapterSelected.InvokeAsync(createdChapter);
+        StateHasChanged();
+    }
+
+    private async Task AddNewCharacter()
+    {
+        var newCharacter = new CharacterDTO
+            {
+                Name = "New Character",
+                NovelId = CurrentNovel.NovelId,
+                Description = "Description of new character",
+                Motivations = "Motivations of new character",
+                CharSynopsis = "Synopsis of new character"
+            };
+
+        var createdCharacterDto = await CharacterService.CreateCharacterAsync(newCharacter);
+        var createdCharacter = createdCharacterDto.MapToEntity();
+
+        CurrentNovel.Characters.Add(createdCharacter);
+        await OnCharacterSelected.InvokeAsync(null); // Reset selected character
+        StateHasChanged();
+    }
+}

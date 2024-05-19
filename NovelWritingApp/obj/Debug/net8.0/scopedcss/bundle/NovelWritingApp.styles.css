@@ -1,0 +1,38 @@
+/* /Layout/MainLayout.razor.rz.scp.css */
+.workshop-container[b-2509y6w3j5] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+header[b-2509y6w3j5] {
+    margin-bottom: 20px;
+}
+
+.content[b-2509y6w3j5] {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar[b-2509y6w3j5] {
+    width: 20%;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.main-content[b-2509y6w3j5] {
+    width: 60%;
+    padding: 10px;
+}
+
+.character-detail[b-2509y6w3j5] {
+    width: 20%;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+textarea[b-2509y6w3j5] {
+    width: 100%;
+}

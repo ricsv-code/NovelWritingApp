@@ -1,0 +1,59 @@
+﻿@page "/chaptercontent"
+@using NovelWritingApp.Shared.Models
+@using NovelWritingApp.Services
+@using NovelWritingApp.Shared.Utilities
+@inject ChapterService ChapterService
+
+<h3>@currentChapter?.Title</h3>
+<div class="chapter-content">
+    <textarea @bind="chapterContent" rows="20" cols="80"></textarea>
+</div>
+<button @onclick="SaveContent">Save</button>
+
+@code {
+    [Parameter] public int ChapterId { get; set; }
+
+    private Chapter currentChapter;
+    private string chapterContent;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadChapterAsync();
+    }
+
+    private async Task LoadChapterAsync()
+    {
+        try
+        {
+            if (ChapterId != 0)
+            {
+                var chapterDto = await ChapterService.GetChapterAsync(ChapterId);
+                if (chapterDto != null)
+                {
+                    currentChapter = chapterDto.MapToEntity();
+                    chapterContent = await ChapterService.GetChapterContentAsync(currentChapter.ContentFilePath);
+                }
+                else
+                {
+                    Console.Error.WriteLine($"Chapter with ID {ChapterId} not found.");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading chapter: {ex.Message}");
+        }
+    }
+
+    private async Task SaveContent()
+    {
+        if (currentChapter != null)
+        {
+            await ChapterService.UpdateChapterContentAsync(ChapterId, chapterContent);
+        }
+        else
+        {
+            Console.Error.WriteLine($"Cannot save content. Chapter with ID {ChapterId} is not loaded.");
+        }
+    }
+}

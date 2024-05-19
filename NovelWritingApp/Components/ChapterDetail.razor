@@ -1,0 +1,30 @@
+﻿@page "/chapterdetail"
+@using NovelWritingApp.Shared.Models
+@inject ChapterService ChapterService
+
+@if (SelectedChapter == null)
+{
+    <p>Please select a chapter.</p>
+}
+else
+{
+    <div>
+        <h3>@SelectedChapter.Title</h3>
+        <button @onclick="EditChapter">Edit</button>
+        <p>@SelectedChapter.ChapSynopsis</p>
+    </div>
+}
+
+@code {
+    [Parameter] public Chapter SelectedChapter { get; set; }
+
+    private async Task EditChapter()
+    {
+        if (SelectedChapter != null)
+        {
+            var content = await ChapterService.GetChapterContentAsync(SelectedChapter.ContentFilePath);
+            // Handle chapter editing logic here
+            // You might navigate to an edit page or show an editor component
+        }
+    }
+}
