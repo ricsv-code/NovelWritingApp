@@ -4,16 +4,15 @@
 @using NovelWritingApp.Shared.Utilities
 @inject ChapterService ChapterService
 
-<h3>@currentChapter?.Title</h3>
+<h3>@CurrentChapter?.Title</h3>
 <div class="chapter-content">
     <textarea @bind="chapterContent" rows="20" cols="80"></textarea>
 </div>
-<button @onclick="SaveContent">Save</button>
+<button class="btn" @onclick="SaveContent">Save</button>
 
 @code {
-    [Parameter] public int ChapterId { get; set; }
-
-    private Chapter currentChapter;
+    [Parameter] public Chapter CurrentChapter { get; set; }
+    [Parameter] public EventCallback<string> OnSaveChapterContent { get; set; }
     private string chapterContent;
 
     protected override async Task OnParametersSetAsync()
@@ -25,18 +24,9 @@
     {
         try
         {
-            if (ChapterId != 0)
+            if (CurrentChapter != null)
             {
-                var chapterDto = await ChapterService.GetChapterAsync(ChapterId);
-                if (chapterDto != null)
-                {
-                    currentChapter = chapterDto.MapToEntity();
-                    chapterContent = await ChapterService.GetChapterContentAsync(currentChapter.ContentFilePath);
-                }
-                else
-                {
-                    Console.Error.WriteLine($"Chapter with ID {ChapterId} not found.");
-                }
+                chapterContent = await ChapterService.GetChapterContentAsync(CurrentChapter.ContentFilePath);
             }
         }
         catch (Exception ex)
@@ -47,13 +37,10 @@
 
     private async Task SaveContent()
     {
-        if (currentChapter != null)
+        if (CurrentChapter != null)
         {
-            await ChapterService.UpdateChapterContentAsync(ChapterId, chapterContent);
-        }
-        else
-        {
-            Console.Error.WriteLine($"Cannot save content. Chapter with ID {ChapterId} is not loaded.");
+            await ChapterService.UpdateChapterContentAsync(CurrentChapter.ChapterId, chapterContent);
+            await OnSaveChapterContent.InvokeAsync(chapterContent);
         }
     }
 }

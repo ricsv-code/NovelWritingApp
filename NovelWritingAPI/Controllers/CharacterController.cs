@@ -64,9 +64,11 @@ namespace NovelWritingAPI.Controllers
         {
             if (characterDto == null || characterDto.NovelId <= 0)
             {
+                Console.WriteLine("API: Invalid character data received.");
                 return BadRequest("Invalid character data.");
             }
 
+            Console.WriteLine($"API: Creating character for NovelId {characterDto.NovelId}");
             var characterCount = await _context.Characters.CountAsync(c => c.NovelId == characterDto.NovelId);
 
             var newCharacter = new Character
@@ -92,8 +94,10 @@ namespace NovelWritingAPI.Controllers
                 CharSynopsis = newCharacter.CharSynopsis
             };
 
+            Console.WriteLine($"API: Created character with ID {createdCharacterDto.CharacterId}");
             return CreatedAtAction(nameof(GetCharacter), new { id = newCharacter.CharacterId }, createdCharacterDto);
         }
+
 
 
 

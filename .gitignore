@@ -9,6 +9,7 @@
 mono_crash.*
 
 # Auto-generated files
+ContentFiles/
 *.vs/
 bin/
 obj/

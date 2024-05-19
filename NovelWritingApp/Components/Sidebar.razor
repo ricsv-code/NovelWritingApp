@@ -3,90 +3,132 @@
 @inject ChapterService ChapterService
 @inject CharacterService CharacterService
 
-<div class="sidebar-container">
-    <div class="column">
-        <h3>Chapters:</h3>
+<div class="sidebar">
+    @if (CurrentNovel != null)
+    {
+        <h2>Chapters</h2>
         <ul>
-            @if (CurrentNovel?.Chapters != null && CurrentNovel.Chapters.Any())
+            @foreach (var chapter in CurrentNovel.Chapters)
             {
-                @foreach (var chapter in CurrentNovel.Chapters)
-                {
-                    <li class="chapter-item @(chapter == SelectedChapter ? "selected" : "")" @onclick="() => OnChapterSelected.InvokeAsync(chapter)">
-                        @chapter.Title
-                    </li>
-                }
-            }
-            else
-            {
-                <p>No chapters available.</p>
+                <li>
+                    @if (chapter == SelectedChapter && isEditingChapter)
+                    {
+                        <input type="text" @bind="chapter.Title" />
+                        <textarea @bind="chapter.ChapSynopsis"></textarea>
+                        <button @onclick="SaveChapter">Save</button>
+                        <button @onclick="CancelEditChapter">Cancel</button>
+                    }
+                    else
+                    {
+                        <span @onclick="() => SelectChapter(chapter)">@chapter.Title</span>
+                        @if (chapter == SelectedChapter)
+                        {
+                            <button @onclick="EditChapter">Edit</button>
+                        }
+                    }
+                </li>
             }
         </ul>
-        <button @onclick="AddNewChapter">Add New Chapter</button>
-    </div>
+        <button @onclick="CreateNewChapter">Create Chapter</button>
 
-    <div class="column">
-        <h3>Characters:</h3>
+        <h2>Characters</h2>
         <ul>
-            @if (CurrentNovel?.Characters != null && CurrentNovel.Characters.Any())
+            @foreach (var character in CurrentNovel.Characters)
             {
-                @foreach (var character in CurrentNovel.Characters)
-                {
-                    <li class="character-item @(character == SelectedCharacter ? "selected" : "")" @onclick="() => OnCharacterSelected.InvokeAsync(character)">
-                        @character.Name
-                    </li>
-                }
-            }
-            else
-            {
-                <p>No characters available.</p>
+                <li>
+                    @if (character == SelectedCharacter && isEditingCharacter)
+                    {
+                        <input type="text" @bind="character.Name" />
+                        <textarea @bind="character.Description"></textarea>
+                        <textarea @bind="character.Motivations"></textarea>
+                        <textarea @bind="character.CharSynopsis"></textarea>
+                        <button @onclick="SaveCharacter">Save</button>
+                        <button @onclick="CancelEditCharacter">Cancel</button>
+                    }
+                    else
+                    {
+                        <span @onclick="() => SelectCharacter(character)">@character.Name</span>
+                        @if (character == SelectedCharacter)
+                        {
+                            <button @onclick="EditCharacter">Edit</button>
+                        }
+                    }
+                </li>
             }
         </ul>
-        <button @onclick="AddNewCharacter">Add New Character</button>
-    </div>
+        <button @onclick="CreateNewCharacter">Create Character</button>
+    }
 </div>
-
 
 @code {
     [Parameter] public Novel CurrentNovel { get; set; }
+    [Parameter] public Chapter SelectedChapter { get; set; }
+    [Parameter] public Character SelectedCharacter { get; set; }
     [Parameter] public EventCallback<Chapter> OnChapterSelected { get; set; }
     [Parameter] public EventCallback<Character> OnCharacterSelected { get; set; }
-    private Chapter SelectedChapter;
-    private Character SelectedCharacter;
+    [Parameter] public EventCallback OnCreateChapter { get; set; }
+    [Parameter] public EventCallback OnCreateCharacter { get; set; }
 
-    private async Task AddNewChapter()
+    private bool isEditingChapter = false;
+    private bool isEditingCharacter = false;
+
+    private void SelectChapter(Chapter chapter)
     {
-        var newChapter = new ChapterDTO
-            {
-                Title = "New Chapter",
-                NovelId = CurrentNovel.NovelId,
-                ChapSynopsis = "Synopsis of new chapter",
-                ContentFilePath = $"path/to/chapter_{Guid.NewGuid()}.txt"
-            };
-
-        var createdChapterDto = await ChapterService.CreateChapterAsync(newChapter);
-        var createdChapter = createdChapterDto.MapToEntity();
-
-        CurrentNovel.Chapters.Add(createdChapter);
-        await OnChapterSelected.InvokeAsync(createdChapter);
-        StateHasChanged();
+        SelectedChapter = chapter;
+        isEditingChapter = false;
+        OnChapterSelected.InvokeAsync(chapter);
     }
 
-    private async Task AddNewCharacter()
+    private void EditChapter()
     {
-        var newCharacter = new CharacterDTO
-            {
-                Name = "New Character",
-                NovelId = CurrentNovel.NovelId,
-                Description = "Description of new character",
-                Motivations = "Motivations of new character",
-                CharSynopsis = "Synopsis of new character"
-            };
+        isEditingChapter = true;
+    }
 
-        var createdCharacterDto = await CharacterService.CreateCharacterAsync(newCharacter);
-        var createdCharacter = createdCharacterDto.MapToEntity();
+    private async Task SaveChapter()
+    {
+        isEditingChapter = false;
+        CurrentNovel.LastModified = DateTime.Now;
+        await ChapterService.UpdateChapterAsync(SelectedChapter.MapToDTO());
+        Console.WriteLine("Chapter saved successfully.");
+    }
 
-        CurrentNovel.Characters.Add(createdCharacter);
-        await OnCharacterSelected.InvokeAsync(null); // Reset selected character
-        StateHasChanged();
+    private void CancelEditChapter()
+    {
+        isEditingChapter = false;
+    }
+
+    private void SelectCharacter(Character character)
+    {
+        SelectedCharacter = character;
+        isEditingCharacter = false;
+        OnCharacterSelected.InvokeAsync(character);
+    }
+
+    private void EditCharacter()
+    {
+        isEditingCharacter = true;
+    }
+
+    private async Task SaveCharacter()
+    {
+        isEditingCharacter = false;
+        CurrentNovel.LastModified = DateTime.Now;
+        await CharacterService.UpdateCharacterAsync(SelectedCharacter.MapToDTO());
+        Console.WriteLine("Character saved successfully.");
+    }
+
+    private void CancelEditCharacter()
+    {
+        isEditingCharacter = false;
+    }
+
+    private async Task CreateNewChapter()
+    {
+        await OnCreateChapter.InvokeAsync(null);
+    }
+
+    private async Task CreateNewCharacter()
+    {
+        await OnCreateCharacter.InvokeAsync(null);
     }
 }

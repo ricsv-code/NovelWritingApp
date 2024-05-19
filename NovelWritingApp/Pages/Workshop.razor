@@ -22,69 +22,14 @@
     </div>
 
     <div class="main-content">
-        <div class="sidebar">
-            @if (CurrentNovel != null)
-            {
-                <h2>Chapters</h2>
-                <ul>
-                    @foreach (var chapter in CurrentNovel.Chapters)
-                    {
-                        <li>
-                            @if (chapter == SelectedChapter && isEditingChapter)
-                            {
-                                <input type="text" @bind="chapter.Title" />
-                                <textarea @bind="chapter.ChapSynopsis"></textarea>
-                                <button @onclick="SaveChapter">Save</button>
-                                <button @onclick="CancelEditChapter">Cancel</button>
-                            }
-                            else
-                            {
-                                <span @onclick="() => SelectChapter(chapter)">@chapter.Title</span>
-                                @if (chapter == SelectedChapter)
-                                {
-                                    <button @onclick="EditChapter">Edit</button>
-                                }
-                            }
-                        </li>
-                    }
-                </ul>
-                <button @onclick="CreateChapter">Create Chapter</button>
-
-                <h2>Characters</h2>
-                <ul>
-                    @foreach (var character in CurrentNovel.Characters)
-                    {
-                        <li>
-                            @if (character == SelectedCharacter && isEditingCharacter)
-                            {
-                                <input type="text" @bind="character.Name" />
-                                <textarea @bind="character.Description"></textarea>
-                                <textarea @bind="character.Motivations"></textarea>
-                                <textarea @bind="character.CharSynopsis"></textarea>
-                                <button @onclick="SaveCharacter">Save</button>
-                                <button @onclick="CancelEditCharacter">Cancel</button>
-                            }
-                            else
-                            {
-                                <span @onclick="() => SelectCharacter(character)">@character.Name</span>
-                                @if (character == SelectedCharacter)
-                                {
-                                    <button @onclick="EditCharacter">Edit</button>
-                                }
-                            }
-                        </li>
-                    }
-                </ul>
-                <button @onclick="CreateCharacter">Create Character</button>
-            }
-        </div>
+        <Sidebar CurrentNovel="CurrentNovel" SelectedChapter="SelectedChapter" SelectedCharacter="SelectedCharacter"
+                 OnChapterSelected="SelectChapter" OnCharacterSelected="SelectCharacter"
+                 OnCreateChapter="CreateChapter" OnCreateCharacter="CreateCharacter" />
 
         <div class="chapter-content">
             @if (SelectedChapter != null)
             {
-                <h3>@SelectedChapter.Title</h3>
-                <textarea @bind="chapterContent" rows="20" cols="80"></textarea>
-                <button @onclick="SaveChapterContent">Save</button>
+                <ChapterContent CurrentChapter="SelectedChapter" OnSaveChapterContent="SaveChapterContent" />
             }
             else
             {
@@ -99,8 +44,6 @@
     private Chapter SelectedChapter;
     private Character SelectedCharacter;
     private bool isEditingTitle = false;
-    private bool isEditingChapter = false;
-    private bool isEditingCharacter = false;
     private string chapterContent;
 
     protected override async Task OnInitializedAsync()
@@ -154,50 +97,12 @@
     private void SelectChapter(Chapter chapter)
     {
         SelectedChapter = chapter;
-        isEditingChapter = false;
         LoadChapterContent();
-    }
-
-    private void EditChapter()
-    {
-        isEditingChapter = true;
-    }
-
-    private async Task SaveChapter()
-    {
-        isEditingChapter = false;
-        CurrentNovel.LastModified = DateTime.Now;
-        await ChapterService.UpdateChapterAsync(SelectedChapter.MapToDTO());
-        Console.WriteLine("Chapter saved successfully.");
-    }
-
-    private void CancelEditChapter()
-    {
-        isEditingChapter = false;
     }
 
     private void SelectCharacter(Character character)
     {
         SelectedCharacter = character;
-        isEditingCharacter = false;
-    }
-
-    private void EditCharacter()
-    {
-        isEditingCharacter = true;
-    }
-
-    private async Task SaveCharacter()
-    {
-        isEditingCharacter = false;
-        CurrentNovel.LastModified = DateTime.Now;
-        await CharacterService.UpdateCharacterAsync(SelectedCharacter.MapToDTO());
-        Console.WriteLine("Character saved successfully.");
-    }
-
-    private void CancelEditCharacter()
-    {
-        isEditingCharacter = false;
     }
 
     private async Task LoadChapterContent()
@@ -208,10 +113,11 @@
         }
     }
 
-    private async Task SaveChapterContent()
+    private async Task SaveChapterContent(string content)
     {
         if (SelectedChapter != null)
         {
+            chapterContent = content;
             await ChapterService.UpdateChapterContentAsync(SelectedChapter.ChapterId, chapterContent);
             Console.WriteLine("Chapter content saved.");
         }

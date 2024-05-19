@@ -1458,6 +1458,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\www
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Microsoft.Win32.Registry.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\mscorlib.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\netstandard.wasm
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Newtonsoft.Json.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\NovelWritingApp.pdb
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\NovelWritingApp.Shared.pdb
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\NovelWritingApp.Shared.wasm
@@ -1796,6 +1797,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\www
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\System.Runtime.InteropServices.RuntimeInformation.wasm.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\System.Threading.ThreadPool.wasm.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\System.ServiceModel.Web.wasm.gz
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Newtonsoft.Json.wasm.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\System.Security.AccessControl.wasm.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Microsoft.Extensions.DependencyInjection.wasm.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Microsoft.Extensions.Configuration.FileExtensions.wasm.gz
@@ -1855,6 +1857,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Mic
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Microsoft.JSInterop.dll
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Microsoft.JSInterop.WebAssembly.dll
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\System.IO.Pipelines.dll
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Microsoft.CSharp.dll
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Microsoft.VisualBasic.Core.dll
@@ -2041,6 +2044,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\Nov
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\NovelWritingApp.AssemblyInfo.cs
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\NovelWritingApp.csproj.CoreCompileInputs.cache
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\NovelWritingApp.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\NovelWritingApp.sourcelink.json
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.AspNetCore.Authorization.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.AspNetCore.Components.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.AspNetCore.Components.Forms.wasm
@@ -2063,6 +2067,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\web
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.Extensions.Primitives.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.JSInterop.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.JSInterop.WebAssembly.wasm
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Newtonsoft.Json.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\System.IO.Pipelines.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.CSharp.wasm
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Microsoft.VisualBasic.Core.wasm
@@ -2269,6 +2274,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\com
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\uzambdkrdn.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\7bn8wx6mls.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\ibf99d3nqg.gz
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\twu083523u.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\aov9qdn7z7.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\ewd4gry5qr.gz
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\vy3ov4u2vz.gz
@@ -2457,8 +2463,3 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\Nov
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\refint\NovelWritingApp.dll
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\NovelWritingApp.pdb
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\ref\NovelWritingApp.dll
-C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Newtonsoft.Json.wasm
-C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\wwwroot\_framework\Newtonsoft.Json.wasm.gz
-C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\bin\Debug\net8.0\Newtonsoft.Json.dll
-C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\webcil\Newtonsoft.Json.wasm
-C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingApp\obj\Debug\net8.0\compressed\twu083523u.gz

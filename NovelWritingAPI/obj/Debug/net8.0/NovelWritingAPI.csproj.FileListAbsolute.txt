@@ -117,6 +117,7 @@ C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\Nov
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\NovelWritingAPI.csproj.CoreCompileInputs.cache
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\NovelWritingAPI.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\NovelWritingAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\NovelWritingAPI.sourcelink.json
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Rille\source\repos\NovelWritingApp\NovelWritingAPI\obj\Debug\net8.0\staticwebassets\msbuild.NovelWritingAPI.Microsoft.AspNetCore.StaticWebAssets.props

@@ -24,10 +24,19 @@ namespace NovelWritingApp.Services
 
         public async Task<CharacterDTO> CreateCharacterAsync(CharacterDTO characterDto)
         {
+            Console.WriteLine($"CharacterService: Creating character for NovelId {characterDto.NovelId} with name {characterDto.Name}");
             var response = await _httpClient.PostAsJsonAsync("api/character", characterDto);
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"CharacterService: Error response {response.StatusCode}: {error}");
+            }
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<CharacterDTO>();
+            var createdCharacter = await response.Content.ReadFromJsonAsync<CharacterDTO>();
+            Console.WriteLine($"CharacterService: Created character with ID {createdCharacter?.CharacterId}");
+            return createdCharacter;
         }
+
 
 
 

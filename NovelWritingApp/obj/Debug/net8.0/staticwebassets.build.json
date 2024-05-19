@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BHw+QotDxywClC+AXmbQJ868CCmtOPPMllhBBBGdSSU=",
+  "Hash": "F7nsQMmEzP9mBjeroxdsqXR2lQhNKgFD5EnAKADJAbw=",
   "Source": "NovelWritingApp",
   "BasePath": "/",
   "Mode": "Root",
@@ -7978,44 +7978,6 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\favicon.png",
-      "SourceId": "NovelWritingApp",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "favicon.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\favicon.png"
-    },
-    {
-      "Identity": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\icon-192.png",
-      "SourceId": "NovelWritingApp",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "icon-192.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\icon-192.png"
-    },
-    {
       "Identity": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\index.html",
       "SourceId": "NovelWritingApp",
       "SourceType": "Discovered",
@@ -8033,25 +7995,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\index.html"
-    },
-    {
-      "Identity": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\sample-data\\weather.json",
-      "SourceId": "NovelWritingApp",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Rille\\source\\repos\\NovelWritingApp\\NovelWritingApp\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "sample-data/weather.json",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\sample-data\\weather.json"
     }
   ]
 }

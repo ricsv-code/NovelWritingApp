@@ -1,7 +1,6 @@
-﻿@using NovelWritingApp.Shared.Models
+﻿@page "/characterdetail"
+@using NovelWritingApp.Shared.Models
 @using NovelWritingApp.Shared.Utilities
-@inject NovelService NovelService
-@inject ChapterService ChapterService
 @inject CharacterService CharacterService
 
 <div class="character-detail">
@@ -11,7 +10,7 @@
         <textarea @bind="SelectedCharacter.Description"></textarea>
         <textarea @bind="SelectedCharacter.Motivations"></textarea>
         <textarea @bind="SelectedCharacter.CharSynopsis"></textarea>
-        <button @onclick="SaveCharacterDetails">Save</button>
+        <button class="btn" @onclick="SaveCharacterDetails">Save</button>
     }
 </div>
 
