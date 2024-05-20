@@ -42,6 +42,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaWRlYmFyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Rille/source/repos/NovelWritingApp/NovelWritingApp/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Rille/source/repos/NovelWritingApp/NovelWritingApp/Pages/Workshop.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya3Nob3AucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -49,7 +53,3 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/Rille/source/repos/NovelWritingApp/NovelWritingApp/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Rille/source/repos/NovelWritingApp/NovelWritingApp/Layout/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-2509y6w3j5

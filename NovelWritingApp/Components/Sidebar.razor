@@ -3,60 +3,93 @@
 @inject ChapterService ChapterService
 @inject CharacterService CharacterService
 
-<div class="sidebar">
+<div class="sidebar-container">
     @if (CurrentNovel != null)
     {
-        <h2>Chapters</h2>
-        <ul>
-            @foreach (var chapter in CurrentNovel.Chapters)
-            {
-                <li>
-                    @if (chapter == SelectedChapter && isEditingChapter)
-                    {
-                        <input type="text" @bind="chapter.Title" />
-                        <textarea @bind="chapter.ChapSynopsis"></textarea>
-                        <button @onclick="SaveChapter">Save</button>
-                        <button @onclick="CancelEditChapter">Cancel</button>
-                    }
-                    else
-                    {
-                        <span @onclick="() => SelectChapter(chapter)">@chapter.Title</span>
+        <div class="column">
+            <h2>Chapters</h2>
+            <ul>
+                @foreach (var chapter in CurrentNovel.Chapters)
+                {
+                    <li class="chapter-item @(chapter == SelectedChapter ? "selected" : "")">
+                        <div class="chapter-header">
+                            <span @onclick="() => SelectChapter(chapter)">@chapter.Title</span>
+                            @if (chapter == SelectedChapter)
+                            {
+                                @if (!isEditingChapter)
+                                {
+                                    <button class="btn" @onclick="EditChapter">Edit</button>
+                                }
+                                else
+                                {
+                                    <button class="btn" @onclick="SaveChapter">Save</button>
+                                    <button class="btn" @onclick="CancelEditChapter">Cancel</button>
+                                }
+                            }
+                        </div>
                         @if (chapter == SelectedChapter)
                         {
-                            <button @onclick="EditChapter">Edit</button>
+                            <div class="chapter-details">
+                                @if (!isEditingChapter)
+                                {
+                                    <p>@chapter.ChapSynopsis</p>
+                                }
+                                else
+                                {
+                                    <input type="text" @bind="chapter.Title" placeholder="Title" />
+                                    <textarea @bind="chapter.ChapSynopsis" placeholder="Synopsis"></textarea>
+                                }
+                            </div>
                         }
-                    }
-                </li>
-            }
-        </ul>
-        <button @onclick="CreateNewChapter">Create Chapter</button>
-
-        <h2>Characters</h2>
-        <ul>
-            @foreach (var character in CurrentNovel.Characters)
-            {
-                <li>
-                    @if (character == SelectedCharacter && isEditingCharacter)
-                    {
-                        <input type="text" @bind="character.Name" />
-                        <textarea @bind="character.Description"></textarea>
-                        <textarea @bind="character.Motivations"></textarea>
-                        <textarea @bind="character.CharSynopsis"></textarea>
-                        <button @onclick="SaveCharacter">Save</button>
-                        <button @onclick="CancelEditCharacter">Cancel</button>
-                    }
-                    else
-                    {
-                        <span @onclick="() => SelectCharacter(character)">@character.Name</span>
+                    </li>
+                }
+            </ul>
+            <button class="btn" @onclick="CreateNewChapter">Create Chapter</button>
+        </div>
+        <div class="column">
+            <h2>Characters</h2>
+            <ul>
+                @foreach (var character in CurrentNovel.Characters)
+                {
+                    <li class="character-item @(character == SelectedCharacter ? "selected" : "")">
+                        <div class="character-header">
+                            <span @onclick="() => SelectCharacter(character)">@character.Name</span>
+                            @if (character == SelectedCharacter)
+                            {
+                                @if (!isEditingCharacter)
+                                {
+                                    <button class="btn" @onclick="EditCharacter">Edit</button>
+                                }
+                                else
+                                {
+                                    <button class="btn" @onclick="SaveCharacter">Save</button>
+                                    <button class="btn" @onclick="CancelEditCharacter">Cancel</button>
+                                }
+                            }
+                        </div>
                         @if (character == SelectedCharacter)
                         {
-                            <button @onclick="EditCharacter">Edit</button>
+                            <div class="character-details">
+                                @if (!isEditingCharacter)
+                                {
+                                    <p>@character.Description</p>
+                                    <p>@character.Motivations</p>
+                                    <p>@character.CharSynopsis</p>
+                                }
+                                else
+                                {
+                                    <input type="text" @bind="character.Name" placeholder="Name" />
+                                    <textarea @bind="character.Description" placeholder="Description"></textarea>
+                                    <textarea @bind="character.Motivations" placeholder="Motivations"></textarea>
+                                    <textarea @bind="character.CharSynopsis" placeholder="Synopsis"></textarea>
+                                }
+                            </div>
                         }
-                    }
-                </li>
-            }
-        </ul>
-        <button @onclick="CreateNewCharacter">Create Character</button>
+                    </li>
+                }
+            </ul>
+            <button class="btn" @onclick="CreateNewCharacter">Create Character</button>
+        </div>
     }
 </div>
 

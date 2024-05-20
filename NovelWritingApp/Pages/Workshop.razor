@@ -11,21 +11,23 @@
         @if (isEditingTitle)
         {
             <input type="text" @bind="CurrentNovel.Title" />
-            <button @onclick="SaveTitle">Save</button>
-            <button @onclick="CancelEditTitle">Cancel</button>
+            <button class="btn" @onclick="SaveTitle">Save</button>
+            <button class="btn" @onclick="CancelEditTitle">Cancel</button>
+            <select class="select" @onchange="OnNovelSelected">
+                @foreach (var novel in Novels)
+                {
+                    <option value="@novel.NovelId">@novel.Title</option>
+                }
+            </select>
         }
         else
         {
             <h1>@CurrentNovel?.Title</h1>
-            <button @onclick="EditTitle">Edit</button>
+            <button class="btn" @onclick="EditTitle">Edit</button>
         }
     </div>
 
     <div class="main-content">
-        <Sidebar CurrentNovel="CurrentNovel" SelectedChapter="SelectedChapter" SelectedCharacter="SelectedCharacter"
-                 OnChapterSelected="SelectChapter" OnCharacterSelected="SelectCharacter"
-                 OnCreateChapter="CreateChapter" OnCreateCharacter="CreateCharacter" />
-
         <div class="chapter-content">
             @if (SelectedChapter != null)
             {
@@ -33,9 +35,13 @@
             }
             else
             {
-                <p>Please select a chapter to edit its content.</p>
+                <p>Loading..</p>
             }
         </div>
+
+        <Sidebar CurrentNovel="CurrentNovel" SelectedChapter="SelectedChapter" SelectedCharacter="SelectedCharacter"
+                 OnChapterSelected="SelectChapter" OnCharacterSelected="SelectCharacter"
+                 OnCreateChapter="CreateChapter" OnCreateCharacter="CreateCharacter" />
     </div>
 </div>
 
@@ -45,11 +51,28 @@
     private Character SelectedCharacter;
     private bool isEditingTitle = false;
     private string chapterContent;
+    private List<Novel> Novels = new List<Novel>();
 
     protected override async Task OnInitializedAsync()
     {
-        await CreateNovelAsync();
+        if (CurrentNovel == null)
+        {
+            await CreateNovelAsync();
+        }
     }
+
+
+    private async Task OnNovelSelected(ChangeEventArgs e)
+    {
+        var selectedNovelId = int.Parse(e.Value.ToString());
+        CurrentNovel = Novels.FirstOrDefault(n => n.NovelId == selectedNovelId);
+        SelectedChapter = CurrentNovel?.Chapters.FirstOrDefault();
+        if (SelectedChapter != null)
+        {
+            await LoadChapterContent();
+        }
+    }
+
 
     private async Task CreateNovelAsync()
     {
@@ -76,10 +99,14 @@
         }
     }
 
-    private void EditTitle()
+    private async Task EditTitle()
     {
         isEditingTitle = true;
+        Novels = await NovelService.GetNovelsAsync();
     }
+
+
+
 
     private async Task SaveTitle()
     {

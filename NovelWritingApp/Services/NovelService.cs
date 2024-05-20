@@ -16,18 +16,18 @@ namespace NovelWritingApp.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<NovelDTO>> GetNovelsAsync()
+        public async Task<List<Novel>> GetNovelsAsync()
         {
             var response = await _httpClient.GetAsync("api/novel");
             response.EnsureSuccessStatusCode();
 
-            var novels = await response.Content.ReadFromJsonAsync<List<NovelDTO>>();
-            if (novels == null)
+            var novelDtos = await response.Content.ReadFromJsonAsync<List<NovelDTO>>();
+            if (novelDtos == null)
             {
                 throw new InvalidOperationException("Failed to retrieve novels.");
             }
 
-            return novels;
+            return novelDtos.Select(dto => dto.MapToEntity()).ToList();
         }
 
         public async Task<NovelDTO> GetNovelByIdAsync(int id)

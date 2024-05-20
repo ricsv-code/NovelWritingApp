@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "NovelWritingApp",
   "resources": {
-    "hash": "sha256-tuJOAMnaQg9iKALgNKk2KVVJy34Dp+/XVwcIn6eZ9Ek=",
+    "hash": "sha256-37y4/FEuRhQPVFiCqQDigUHIqqRbUjKdXrq8hHuVbP0=",
     "jsModuleNative": {
       "dotnet.native.8.0.1.3koll5wog6.js": "sha256-SGOlISx+3G4kkvpC9Uq3qoPGsnjxGmW61QBev0lyI5U="
     },
@@ -210,11 +210,11 @@
       "netstandard.wasm": "sha256-2kH24/YfHmU3B4eYRyRmiwebYROM4+B9eDWKvMnUdP8=",
       "System.Private.CoreLib.wasm": "sha256-CsySKiP7HYY1pS8LTDE60EkqiX5oHb3WoEZHDNd1yK0=",
       "NovelWritingApp.Shared.wasm": "sha256-Q+OjAS23TTR4izwvNV4MiqMze2j5bJP2zg9YPY4sQac=",
-      "NovelWritingApp.wasm": "sha256-gLXB8ZKPlZEWDoPP/2f4Uwlvme/iQUHEc1x+zfZxPII="
+      "NovelWritingApp.wasm": "sha256-Jg3MvObEXy20wrInQrHDc5Zd8Q1WQ+5rwxtnDCRz9HA="
     },
     "pdb": {
       "NovelWritingApp.Shared.pdb": "sha256-+BUyTrjq51ZJYEleJcpiFVB+W1ZEeFY1dl2o/KxwelU=",
-      "NovelWritingApp.pdb": "sha256-0kQ0z8ZlgdaHZtY+KfPt8xi6pEjwrqvMQ2DtgEt2bGw="
+      "NovelWritingApp.pdb": "sha256-SHF0/lzBY27UfMNWBrH30AkrDq6m5K2Ksm/DrFLXmcM="
     }
   },
   "cacheBootResources": true,
