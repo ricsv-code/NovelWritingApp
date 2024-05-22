@@ -1,4 +1,4 @@
-/* Siderbar CSS */
+/* */
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 0;
@@ -56,7 +56,7 @@ html, body {
 
 .sidebar {
     width: 40%;
-    background-color: #f0f0f0;
+    background-color: f0f0f0;
     padding: 10px;
 }
 
@@ -104,12 +104,14 @@ html, body {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: d9d9d9;
+    width: 30%;
 }
 
 .column {
     flex: 1;
     margin: 0 10px;
+    width: 50%;
 }
 
     .column h3 {
@@ -140,6 +142,7 @@ html, body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 }
 
 .chapter-details, .character-details {
@@ -178,13 +181,30 @@ html, body {
 }
 
 .chapter-content {
-    width: 75%;
+    width: 70%;
     padding: 20px;
 }
 
 .character-detail {
     width: 25%;
 
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sidebar {
+        width: 100%;
+        order: 2;
+    }
+
+    .chapter-content {
+        width: 100%;
+        order: 1;
+    }
 }
 
 

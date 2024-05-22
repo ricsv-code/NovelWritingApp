@@ -38,8 +38,6 @@ namespace NovelWritingApp.Services
         }
 
 
-
-
         public async Task UpdateCharacterAsync(CharacterDTO characterDto)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/character/{characterDto.CharacterId}", characterDto);
