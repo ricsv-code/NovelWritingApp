@@ -48,7 +48,6 @@ namespace NovelWritingAPI.Controllers
                 return NotFound();
             }
 
-            // Map the entity to DTO
             var chapterDto = new ChapterDTO
             {
                 ChapterId = chapter.ChapterId,
@@ -64,7 +63,7 @@ namespace NovelWritingAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ChapterDTO>> CreateChapter(ChapterDTO chapterDto)
         {
-            // Log the incoming ChapterDTO
+ 
             Console.WriteLine($"Received ChapterDTO: {JsonConvert.SerializeObject(chapterDto)}");
 
             if (chapterDto == null || chapterDto.NovelId <= 0)
@@ -89,7 +88,6 @@ namespace NovelWritingAPI.Controllers
                 _context.Chapters.Add(newChapter);
                 await _context.SaveChangesAsync();
 
-                // Ensure the directory exists and create the empty content file
                 string contentFilePath = Path.Combine(_environment.ContentRootPath, newChapter.ContentFilePath);
                 string chapterDirectory = Path.GetDirectoryName(contentFilePath);
 
@@ -100,7 +98,6 @@ namespace NovelWritingAPI.Controllers
 
                 await System.IO.File.WriteAllTextAsync(contentFilePath, string.Empty);
 
-                // Map the entity to DTO
                 var createdChapterDto = new ChapterDTO
                 {
                     ChapterId = newChapter.ChapterId,
@@ -161,17 +158,14 @@ namespace NovelWritingAPI.Controllers
                 return BadRequest();
             }
 
-            // Resolve the full path on the server-side
             var fullContentFilePath = Path.Combine(_environment.ContentRootPath, updateModel.ContentFilePath);
 
-            // Ensure the directory exists
             var directoryPath = Path.GetDirectoryName(fullContentFilePath);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
 
-            // Write content to the file
             await System.IO.File.WriteAllTextAsync(fullContentFilePath, updateModel.Content);
 
             return NoContent();

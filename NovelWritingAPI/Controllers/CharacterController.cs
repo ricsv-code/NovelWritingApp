@@ -45,7 +45,6 @@ namespace NovelWritingAPI.Controllers
                 return NotFound();
             }
 
-            // Map the entity to DTO
             var characterDto = new CharacterDTO
             {
                 CharacterId = character.CharacterId,
@@ -83,7 +82,6 @@ namespace NovelWritingAPI.Controllers
             _context.Characters.Add(newCharacter);
             await _context.SaveChangesAsync();
 
-            // Map the entity to DTO
             var createdCharacterDto = new CharacterDTO
             {
                 CharacterId = newCharacter.CharacterId,

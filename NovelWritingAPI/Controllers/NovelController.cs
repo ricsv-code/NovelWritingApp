@@ -112,7 +112,6 @@ namespace NovelWritingAPI.Controllers
             _context.Chapters.Add(initialChapter);
             await _context.SaveChangesAsync();
 
-            // Ensure the directory exists and create the content file
             string novelDirectory = Path.Combine(_environment.ContentRootPath, "ContentFiles", novel.NovelId.ToString());
             string chapterDirectory = Path.Combine(novelDirectory, "1");
             string contentFilePath = Path.Combine(chapterDirectory, "content.txt");
@@ -124,7 +123,6 @@ namespace NovelWritingAPI.Controllers
 
             await System.IO.File.WriteAllTextAsync(contentFilePath, "Chapter content");
 
-            // Ensure ContentFilePath remains a relative path
             initialChapter.ContentFilePath = $"ContentFiles/{novel.NovelId}/1/content.txt";
 
             _context.Entry(initialChapter).State = EntityState.Modified;

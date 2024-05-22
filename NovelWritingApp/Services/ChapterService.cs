@@ -1,5 +1,5 @@
 ﻿using NovelWritingApp.Shared.Models;
-using NovelWritingApp.Shared.Utilities; // Add this for mapping extensions
+using NovelWritingApp.Shared.Utilities; 
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
@@ -40,9 +40,8 @@ namespace NovelWritingApp.Services
             var chapter = await GetChapterAsync(chapterId);
             if (chapter != null)
             {
-                // Get all chapters of the novel to determine the chapter number within the novel
                 var chapters = await _httpClient.GetFromJsonAsync<List<ChapterDTO>>($"api/chapter/novel/{chapter.NovelId}");
-                var chapterIndex = chapters.FindIndex(c => c.ChapterId == chapterId) + 1; // +1 to make it 1-based index
+                var chapterIndex = chapters.FindIndex(c => c.ChapterId == chapterId) + 1; 
 
                 if (chapterIndex > 0)
                 {
@@ -52,7 +51,7 @@ namespace NovelWritingApp.Services
                     {
                         ChapterId = chapterId,
                         Content = content,
-                        ContentFilePath = contentFilePath // Use relative path
+                        ContentFilePath = contentFilePath 
                     };
 
                     await _httpClient.PutAsJsonAsync($"api/chapter/{chapterId}/content", contentUpdateModel);
