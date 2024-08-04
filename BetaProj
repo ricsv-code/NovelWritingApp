@@ -274,8 +274,11 @@ namespace PlateauDetect
 
         public static void AddPoint(Vector2D point)
         {
-            _points.Add(point);            
-            OnPointAdded?.Invoke(null, _points);
+            if (_points.Count == 0 || Math.Abs(point.X - _points.Last().X) >= 0.1)
+            {
+                _points.Add(point);
+                OnPointAdded?.Invoke(null, _points);
+            }
 
         }
 
