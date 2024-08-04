@@ -21,34 +21,38 @@ namespace PlateauDetect
         }
     }
 
-
     public static class DataTransform
     {
         private static double _previousSwAngle;
         private static double _totalSwRotation;
-        private static double _initWheelAngle;
         private static TimeSpan _maxTimeDifference;
-
         private static Queue<(TimeSpan time, double value)> _swQueue = new Queue<(TimeSpan time, double value)>();
         private static Queue<(TimeSpan time, double value)> _wheelQueue = new Queue<(TimeSpan time, double value)>();
+
+        private static double? _refSwVal;
+        private static double? _refWheelVal;
 
         static DataTransform()
         {
             TimeSpan maxTimeDifference = new TimeSpan(0, 0, 2);
-
             _previousSwAngle = 0;
             _totalSwRotation = 0;
-            _initWheelAngle = 0;
             _maxTimeDifference = maxTimeDifference;
 
+            _refSwVal = null;
+            _refWheelVal = null;
         }
-
 
         public static void UpdateSwAngle(double inclY, double inclZ, TimeSpan timestamp)
         {
             double currentAngle = Math.Atan2(inclY, inclZ);
-            double deltaAngle = currentAngle - _previousSwAngle;
 
+            if (_refSwVal == null)
+            {
+                _refSwVal = currentAngle;
+            }
+
+            double deltaAngle = currentAngle - _refSwVal.Value;
 
             if (deltaAngle > Math.PI)
             {
@@ -69,7 +73,12 @@ namespace PlateauDetect
 
         public static void UpdateWheelAngle(double wheelAngle, TimeSpan timestamp)
         {
-            double wheelRotation = Math.Abs(_initWheelAngle - wheelAngle);
+            if (_refWheelVal == null)
+            {
+                _refWheelVal = wheelAngle;
+            }
+
+            double wheelRotation = Math.Abs(_refWheelVal.Value - wheelAngle);
 
             _wheelQueue.Enqueue((timestamp, wheelRotation));
 
@@ -78,7 +87,6 @@ namespace PlateauDetect
 
         private static void TryMatchValues()
         {
-
             while (_swQueue.Count > 0 && _wheelQueue.Count > 0)
             {
                 var sw = _swQueue.Peek();
@@ -87,14 +95,12 @@ namespace PlateauDetect
 
                 if (timeDifference <= _maxTimeDifference.TotalMilliseconds)
                 {
-
                     Vector2D matchedPoint = ProcessMatch(sw.value, wheel.value);
 
                     _swQueue.Dequeue();
                     _wheelQueue.Dequeue();
 
                     OnDataMatched?.Invoke(null, matchedPoint);
-
                 }
                 else
                 {
@@ -116,9 +122,9 @@ namespace PlateauDetect
         {
             return new Vector2D(swValue, wheelValue);
         }
-
     }
 }
+
 
 
 
