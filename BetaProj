@@ -298,183 +298,99 @@ namespace PlateauDetect
 
 
 
-    public class PlateauDetector : IPlateauDetector
+public class PlateauDetector : IPlateauDetector
+{
+    public double MinPlateauLength { get; set; }
+    public double PlateauStartMinX { get; set; }
+    public double PlateauMinY { get; set; }
+    public bool XFlipped { get; set; }
+    public bool YFlipped { get; set; }
+    public double Margin { get; set; }
+
+    private List<Vector2D> points = new List<Vector2D>();
+    private Vector2D startPoint;
+    private bool inPlateau = false;
+
+    public PlateauDetector()
     {
-        public double MinPlateauLength { get; set; }
-        public double PlateauStartMinX { get; set; }
-        public double PlateauMinY { get; set; }
-        public bool XFlipped { get; set; }
-        public bool YFlipped { get; set; }
-        public double Margin { get; set; }
-
-        private List<Vector2D> points = new List<Vector2D>();
-        private Vector2D startPoint;
-        private bool inPlateau = false;
-
-        public PlateauDetector()
-        {
-            Reset();
-        }
-
-        public bool Update(Vector2D newPoint, out Vector2D startOfPlateau)
-        {
-            points.Add(newPoint);
-            startOfPlateau = Vector2D.Zero;
-
-            if (!inPlateau)
-            {
-                if (IsValidStartingPoint(newPoint))
-                {
-                    startPoint = newPoint;
-                    inPlateau = true;
-                }
-            }
-            else
-            {
-                if (!IsValidPlateauPoint(newPoint))
-                {
-                    inPlateau = false;
-                    points.Clear();
-                }
-                else if (IsPlateauComplete(newPoint))
-                {
-                    startOfPlateau = startPoint;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void Reset()
-        {
-            points.Clear();
-            startPoint = Vector2D.Zero;
-            inPlateau = false;
-        }
-
-        private bool IsValidStartingPoint(Vector2D point)
-        {
-            return point.X >= PlateauStartMinX && point.Y >= PlateauMinY;
-        }
-
-        private bool IsValidPlateauPoint(Vector2D point)
-        {
-            if (points.Count < 2)
-                return true;
-
-            var previousPoint = points[points.Count - 1]; 
-            double deltaY = Math.Abs(point.Y - previousPoint.Y);
-
-            return deltaY <= Margin;
-        }
-
-        private bool IsPlateauComplete(Vector2D point)
-        {
-            if (points.Count < 2)
-                return false;
-
-            double length = XFlipped ? startPoint.X - point.X : point.X - startPoint.X;
-            return length >= MinPlateauLength && IsWithinMargin();
-        }
-
-        private bool IsWithinMargin()
-        {
-            for (int i = 1; i < points.Count; i++)
-            {
-                double deltaY = Math.Abs(points[i].Y - points[i - 1].Y);
-                if (deltaY > Margin)
-                    return false;
-            }
-            return true;
-        }
+        Reset();
     }
 
-
-
-    public class PlateauDetector : IPlateauDetector
+    public bool Update(Vector2D newPoint, out Vector2D startOfPlateau)
     {
-        public double MinPlateauLength { get; set; }
-        public double PlateauStartMinX { get; set; }
-        public double PlateauMinY { get; set; }
-        public bool XFlipped { get; set; }
-        public bool YFlipped { get; set; }
-        public double Margin { get; set; }
-
-        private List<Vector2D> points = new List<Vector2D>();
-        private Vector2D startPoint;
-        private bool inPlateau = false;
-
-        public PlateauDetector()
+        // Handle XFlipped and YFlipped
+        if (XFlipped)
         {
-            Reset();
+            newPoint = new Vector2D(-newPoint.X, newPoint.Y);
+        }
+        if (YFlipped)
+        {
+            newPoint = new Vector2D(newPoint.X, -newPoint.Y);
         }
 
-        public bool Update(Vector2D newPoint, out Vector2D startOfPlateau)
+        points.Add(newPoint);
+        startOfPlateau = Vector2D.Zero;
+
+        if (!inPlateau)
         {
-            points.Add(newPoint);
-            startOfPlateau = Vector2D.Zero;
-
-            if (!inPlateau)
+            if (IsValidStartingPoint(newPoint))
             {
-                if (IsValidStartingPoint(newPoint))
-                {
-                    startPoint = newPoint;
-                    inPlateau = true;
-                }
+                startPoint = newPoint;
+                inPlateau = true;
             }
-            else
+        }
+        else
+        {
+            if (!IsWithinMargin(newPoint))
             {
-                if (!IsWithinMargin(newPoint))
-                {
-                    inPlateau = false;
-                }
-                else if (IsPlateauComplete(newPoint))
-                {
-                    startOfPlateau = startPoint;
-                    return true;
-                }
+                inPlateau = false;
             }
+            else if (IsPlateauComplete(newPoint))
+            {
+                startOfPlateau = startPoint;
+                return true;
+            }
+        }
 
+        return false;
+    }
+
+    public void Reset()
+    {
+        points.Clear();
+        startPoint = Vector2D.Zero;
+        inPlateau = false;
+    }
+
+    private bool IsValidStartingPoint(Vector2D point)
+    {
+        return point.X >= PlateauStartMinX && point.Y >= PlateauMinY;
+    }
+
+    private bool IsWithinMargin(Vector2D point)
+    {
+        if (points.Count < 2)
             return false;
-        }
 
-        public void Reset()
-        {
-            points.Clear();
-            startPoint = Vector2D.Zero;
-            inPlateau = false;
-        }
+        var previousPoint = points[points.Count - 2];
+        double deltaY = Math.Abs(point.Y - previousPoint.Y);
 
-        private bool IsValidStartingPoint(Vector2D point)
-        {
-            return point.X >= PlateauStartMinX && point.Y >= PlateauMinY;
-        }
+        return deltaY <= Margin;
+    }
 
-        private bool IsWithinMargin(Vector2D point)
+    private bool IsPlateauComplete(Vector2D point)
+    {
+        double length = Math.Abs(point.X - startPoint.X);
+        return length >= MinPlateauLength && AllPointsWithinMargin();
+    }
+
+    private bool AllPointsWithinMargin()
+    {
+        for (int i = 1; i < points.Count; i++)
         {
-            if (points.Count < 2)
+            double deltaY = Math.Abs(points[i].Y - points[i - 1].Y);
+            if (deltaY > Margin)
                 return false;
-
-            var previousPoint = points[points.Count - 2];
-            double deltaY = Math.Abs(point.Y - previousPoint.Y);
-
-            return deltaY <= Margin;
         }
-
-        private bool IsPlateauComplete(Vector2D point)
-        {
-            double length = XFlipped ? startPoint.X - point.X : point.X - startPoint.X;
-            return length >= MinPlateauLength && AllPointsWithinMargin();
-        }
-
-        private bool AllPointsWithinMargin()
-        {
-            for (int i = 1; i < points.Count; i++)
-            {
-                double deltaY = Math.Abs(points[i].Y - points[i - 1].Y);
-                if (deltaY > Margin)
-                    return false;
-            }
-            return true;
-        }
+        return true;
+    }
