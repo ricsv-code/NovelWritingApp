@@ -1,343 +1,59 @@
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Security.Policy;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-
-namespace PlcEmulator
-{
-
-    public partial class ModelWindow : Window
-    {
-        private Model3DGroup _modelGroup;
-
-        private System.Timers.Timer _rotationTimer;
-
-        private AxisAngleRotation3D _rotationX, _rotationY, _rotationZ;
-        private Point3D[] _corners;
-        private Transform3DGroup _transformGroup;
-        public ModelWindow()
+        public class ExtendedKalmanFilter
         {
-            InitializeComponent();
+            private double _state; // Tillstånd (t.ex. position)
+            private double _errorCovariance; // Felkovarians (osäkerhet i tillståndet)
+            private readonly double _processNoise;
+            private readonly double _measurementNoise;
 
-
-
-            // CompositionTarget.Rendering += UpdateRotation;
-
-            double width = 5;
-            double height = 3;
-            double depth = 2;
-
-
-            _corners = new Point3D[]
+            public ExtendedKalmanFilter(double initialState, double initialErrorCovariance, double processNoise, double measurementNoise)
             {
-                 new Point3D(-width / 2, -height / 2, -depth / 2),
-                 new Point3D(width / 2, -height / 2, -depth / 2),
-                 new Point3D(width / 2, height / 2, -depth / 2),
-                 new Point3D(-width / 2, height / 2, -depth / 2),
-                 new Point3D(-width / 2, -height / 2, depth / 2),
-                 new Point3D(width / 2, -height / 2, depth / 2),
-                 new Point3D(width / 2, height / 2, depth / 2),
-                 new Point3D(-width / 2, height / 2, depth / 2)
-            };
-
-            _transformGroup = new Transform3DGroup();
-            _rotationX = new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0);
-            _rotationY = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
-            _rotationZ = new AxisAngleRotation3D(new Vector3D(0, 0, 1), 0);
-
-            _transformGroup.Children.Add(new RotateTransform3D(_rotationX));
-            _transformGroup.Children.Add(new RotateTransform3D(_rotationY));
-            _transformGroup.Children.Add(new RotateTransform3D(_rotationZ));
-
-
-            _modelGroup = CreateModel(width, height, depth);
-
-            Model.Content = _modelGroup;
-
-
-            _rotationTimer = new System.Timers.Timer();
-
-            _rotationTimer.Interval = 30;
-            _rotationTimer.Elapsed += MoveImage;
-            _rotationTimer.Start();
-
-            Closing += OnClosing;
-
-            Show();
-        }
-
-        private void OnClosing(object? sender, CancelEventArgs e)
-        {
-            _rotationTimer?.Stop();
-        }
-
-
-
-        private void MoveImage(object? sender, System.Timers.ElapsedEventArgs e)
-        {
-            Application.Current?.Dispatcher?.Invoke(() =>
-            {
-                _rotationX.Angle++;
-                _rotationY.Angle++;
-                _rotationZ.Angle++;
-            });
-
-        }
-
-        private Model3DGroup CreateModel(double width, double height, double depth)
-        {
-            //"blocket"
-            var modelBase = new MeshGeometry3D();
-
-            foreach (var corner in _corners)
-            {
-                modelBase.Positions.Add(corner);
+                _state = initialState;
+                _errorCovariance = initialErrorCovariance;
+                _processNoise = processNoise;
+                _measurementNoise = measurementNoise;
             }
 
-            //triangel1
-            modelBase.TriangleIndices.Add(0);
-            modelBase.TriangleIndices.Add(1);
-            modelBase.TriangleIndices.Add(2);
-            //triangel2
-            modelBase.TriangleIndices.Add(2);
-            modelBase.TriangleIndices.Add(3);
-            modelBase.TriangleIndices.Add(0);
+            public Func<double, double>  ProcessModel { get; set; }
 
-            //triangel3
-            modelBase.TriangleIndices.Add(4);
-            modelBase.TriangleIndices.Add(7);
-            modelBase.TriangleIndices.Add(6);
-            //triangel4
-            modelBase.TriangleIndices.Add(6);
-            modelBase.TriangleIndices.Add(5);
-            modelBase.TriangleIndices.Add(4);
-
-            //triangel5
-            modelBase.TriangleIndices.Add(0);
-            modelBase.TriangleIndices.Add(3);
-            modelBase.TriangleIndices.Add(7);
-            //triangel6
-            modelBase.TriangleIndices.Add(7);
-            modelBase.TriangleIndices.Add(4);
-            modelBase.TriangleIndices.Add(0);
-
-            //triangel7
-            modelBase.TriangleIndices.Add(1);
-            modelBase.TriangleIndices.Add(5);
-            modelBase.TriangleIndices.Add(6);
-            //triangel8
-            modelBase.TriangleIndices.Add(6);
-            modelBase.TriangleIndices.Add(2);
-            modelBase.TriangleIndices.Add(1);
-
-            //triangel9
-            modelBase.TriangleIndices.Add(3);
-            modelBase.TriangleIndices.Add(2);
-            modelBase.TriangleIndices.Add(6);
-            //triangel10
-            modelBase.TriangleIndices.Add(6);
-            modelBase.TriangleIndices.Add(7);
-            modelBase.TriangleIndices.Add(3);
-
-            //triangel11
-            modelBase.TriangleIndices.Add(0);
-            modelBase.TriangleIndices.Add(4);
-            modelBase.TriangleIndices.Add(5);
-            //triangel12
-            modelBase.TriangleIndices.Add(5);
-            modelBase.TriangleIndices.Add(1);
-            modelBase.TriangleIndices.Add(0);
-
-
-            var colorMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.Blue));
-            var model = new GeometryModel3D(modelBase, colorMaterial);
-            //blocket klart
-
-
-            var modelGroup = new Model3DGroup();
-
-            //ljussättning
-            var directionalLight = new DirectionalLight(Colors.White, new Vector3D(-1, -1, -2));
-            modelGroup.Children.Add(directionalLight);
-
-            //modellens rotation
-
-            modelGroup.Children.Add(model);
-
-            modelGroup.Children.Add(AddEdge(_corners[0], _corners[1]));
-            modelGroup.Children.Add(AddEdge(_corners[1], _corners[2]));
-            modelGroup.Children.Add(AddEdge(_corners[2], _corners[3]));
-            modelGroup.Children.Add(AddEdge(_corners[3], _corners[0]));
-
-            modelGroup.Children.Add(AddEdge(_corners[4], _corners[5]));
-            modelGroup.Children.Add(AddEdge(_corners[5], _corners[6]));
-            modelGroup.Children.Add(AddEdge(_corners[6], _corners[7]));
-            modelGroup.Children.Add(AddEdge(_corners[7], _corners[4]));
-
-            modelGroup.Children.Add(AddEdge(_corners[0], _corners[4]));
-            modelGroup.Children.Add(AddEdge(_corners[1], _corners[5]));
-            modelGroup.Children.Add(AddEdge(_corners[2], _corners[6]));
-            modelGroup.Children.Add(AddEdge(_corners[3], _corners[7]));
-
-            modelGroup.Transform = _transformGroup;
-            return modelGroup;
-
-        }
-
-
-        private Model3DGroup AddEdgePanels(Point3D start, Point3D end)
-        {
-            var material = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
-            var modelGroup = new Model3DGroup();
-
-            var panelOne = new MeshGeometry3D();
-
-            var direction = end - start;
-            var length = direction.Length;
-
-            double panelWidth = 0.1;
-
-            direction.Normalize();
-
-            panelOne.Positions.Add(start);
-            panelOne.Positions.Add(end);
-            panelOne.Positions.Add(new Point3D(start.X, start.Y + panelWidth, start.Z));
-            panelOne.Positions.Add(new Point3D(end.X, end.Y + panelWidth, end.Z));
-
-            panelOne.TriangleIndices.Add(0);
-            panelOne.TriangleIndices.Add(1);
-            panelOne.TriangleIndices.Add(2);
-
-            panelOne.TriangleIndices.Add(2);
-            panelOne.TriangleIndices.Add(3);
-            panelOne.TriangleIndices.Add(0);
-
-            var panelTwo = new MeshGeometry3D();
-
-            panelTwo.Positions.Add(start);
-            panelTwo.Positions.Add(end);
-            panelTwo.Positions.Add(new Point3D(start.X + panelWidth, start.Y, start.Z));
-            panelTwo.Positions.Add(new Point3D(end.X + panelWidth, end.Y, end.Z));
-
-            panelTwo.TriangleIndices.Add(0);
-            panelTwo.TriangleIndices.Add(1);
-            panelTwo.TriangleIndices.Add(2);
-
-            panelTwo.TriangleIndices.Add(2);
-            panelTwo.TriangleIndices.Add(3);
-            panelTwo.TriangleIndices.Add(0);
-
-            modelGroup.Children.Add(new GeometryModel3D(panelOne, material));
-            modelGroup.Children.Add(new GeometryModel3D(panelTwo, material));
-
-            return modelGroup;
-        }
-
-        private GeometryModel3D AddEdge(Point3D start, Point3D end)
-        {
-            var material = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
-
-            var mesh = new MeshGeometry3D();
-            var direction = end - start;
-            var length = direction.Length;
-
-
-            direction.Normalize();
-
-            double radius = 0.1;
-
-            for (int i = 0; i <= 20; i++)
+            // Icke-linjär processmodell (exempel med en sinusfunktion)
+            private double ProcessModel(double state)
             {
-                double angleZ = 2 * Math.PI * i / 20;
-                double x = radius * Math.Cos(angleZ);
-                double y = radius * Math.Sin(angleZ);
-
-
-                mesh.Positions.Add(new Point3D(x, y, 0));
-
-                mesh.Positions.Add(new Point3D(x, y, length));
+                return Math.Sin(state);
             }
 
-            for (int i = 0; i < 20; i++)
+            // Derivatan av processmodellen (används som Jacobian)
+            private double ProcessModelJacobian(double state)
             {
-                int index1 = 2 * i;
-                int index2 = 2 * i + 1;
-                int index3 = 2 * (i + 1);
-                int index4 = 2 * (i + 1) + 1;
-
-                mesh.TriangleIndices.Add(index1);
-                mesh.TriangleIndices.Add(index3);
-                mesh.TriangleIndices.Add(index2);
-
-                mesh.TriangleIndices.Add(index2);
-                mesh.TriangleIndices.Add(index3);
-                mesh.TriangleIndices.Add(index4);
+                return Math.Cos(state); // Derivatan av sin(x) är cos(x)
             }
 
-            var transformGroup = new Transform3DGroup();
-            var translation = new TranslateTransform3D(start.X, start.Y, start.Z);
-
-            var axis = Vector3D.CrossProduct(new Vector3D(0, 0, 1), direction);
-            double angle = Vector3D.AngleBetween(new Vector3D(0, 0, 1), direction);
-            var rotation = new AxisAngleRotation3D(axis, angle);
-            var rotateTransform = new RotateTransform3D(rotation);
-
-            transformGroup.Children.Add(rotateTransform);
-            transformGroup.Children.Add(translation);
-
-            return new GeometryModel3D(mesh, material)
+            // Mätmodell (vi antar att mätningen är linjär här, men den kan också vara icke-linjär)
+            private double MeasurementModel(double state)
             {
-                Transform = transformGroup
-            };
+                return state; //sensor input
+            }
 
-        }
+            // Derivatan av mätmodellen (Jacobian)
+            private double MeasurementModelJacobian(double state)
+            {
+                return 1.0; // Derivatan av en linjär funktion är konstant
+            }
 
-        private void UpdateRotation(object sender, RoutedEventArgs e)
-        {
-            _rotationX.Angle++;
-            _rotationY.Angle++;
-            _rotationZ.Angle++;
-        }
+            public double Update(double measurement)
+            {
+                // Förutsägelse
+                double predictedState = ProcessModel(_state);
+                double jacobianProcessModel = ProcessModelJacobian(_state);
+                double predictedErrorCovariance = jacobianProcessModel * _errorCovariance * jacobianProcessModel + _processNoise;
 
-        private void RotateX(object sender, RoutedEventArgs e)
-        {
+                // Kalman Gain
+                double jacobianMeasurementModel = MeasurementModelJacobian(predictedState);
+                double kalmanGain = predictedErrorCovariance * jacobianMeasurementModel /
+                                    (jacobianMeasurementModel * predictedErrorCovariance * jacobianMeasurementModel + _measurementNoise);
 
-            _rotationX.Angle++;
+                // Uppdatering med mätningen
+                _state = predictedState + kalmanGain * (measurement - MeasurementModel(predictedState));
+                _errorCovariance = (1 - kalmanGain * jacobianMeasurementModel) * predictedErrorCovariance;
 
-        }
-        private void RotateY(object sender, RoutedEventArgs e)
-        {
-
-            _rotationY.Angle++;
-
-        }
-        private void RotateZ(object sender, RoutedEventArgs e)
-        {
-
-            _rotationZ.Angle++;
-        }
-
-    }
-}
-
-    <Grid>
-        <StackPanel>
-            <RepeatButton Content="Rotate" Click="UpdateRotation" Width="60" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,30,0,0" Delay="0" Interval="30"/>
-            <RepeatButton Content="X" Click="RotateX" Width="60" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,5,0,0" Delay="0" Interval="30"/>
-            <RepeatButton Content="Y" Click="RotateY" Width="60" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,5,0,0" Delay="0" Interval="30"/>
-            <RepeatButton Content="z" Click="RotateZ" Width="60" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,5,0,0" Delay="0" Interval="30"/>
-        </StackPanel>
-        <Viewport3D Name="ModelViewPort" ClipToBounds="True">
-
-            <Viewport3D.Camera>
-                <PerspectiveCamera Position="0,0,10" LookDirection="0,0,-10" UpDirection="0,1,0" FieldOfView="60" />
-            </Viewport3D.Camera>
-
-            <ModelVisual3D x:Name="Model" />
-        </Viewport3D>
-    </Grid>
-
+                return _state;
+            }
