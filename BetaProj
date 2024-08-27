@@ -57,3 +57,21 @@
 
                 return _state;
             }
+
+
+
+    private List<Vector2> _mockupSinData;
+
+    public Program()
+    {
+        Random random = new Random();
+        int numberOfPoints = 100; // Antal punkter att generera
+        double noiseLevel = 0.1; // Justera detta för att kontrollera brusnivån
+
+        _mockupSinData = Enumerable.Range(0, numberOfPoints)
+            .Select(x => new Vector2(
+                x, // X-värdet är bara en linjär sekvens
+                (float)(Math.Sin(x * 0.1) + (random.NextDouble() * 2 - 1) * noiseLevel) // Y-värdet är sinus plus brus
+            ))
+            .ToList();
+    }
