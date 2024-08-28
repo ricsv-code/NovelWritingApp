@@ -1,11 +1,19 @@
-        public class ExtendedKalmanFilter
+        public class UnscentedKalmanFilter
         {
-            private double _state; // Tillstånd (t.ex. position)
-            private double _errorCovariance; // Felkovarians (osäkerhet i tillståndet)
+            private double _state; // State (e.g., position)
+            private double _errorCovariance; // Error covariance (uncertainty in state)
             private readonly double _processNoise;
             private readonly double _measurementNoise;
 
-            public ExtendedKalmanFilter(double initialState, double initialErrorCovariance, double processNoise, double measurementNoise)
+            //Sigma Points Generation: The GenerateSigmaPoints function creates sigma points that represent the distribution of the state.
+
+            //Unscented Transform: Sigma points are transformed through the process and measurement models, and the predicted mean and covariance are calculated.
+
+            //Kalman Gain: It calculates the Kalman Gain using the cross-covariance between the state and the measurement.
+
+            // State Update: The state and covariance are updated based on the measurement using the Kalman Gain.
+
+            public UnscentedKalmanFilter(double initialState, double initialErrorCovariance, double processNoise, double measurementNoise)
             {
                 _state = initialState;
                 _errorCovariance = initialErrorCovariance;
@@ -13,65 +21,82 @@
                 _measurementNoise = measurementNoise;
             }
 
-            public Func<double, double>  ProcessModel { get; set; }
 
-            // Icke-linjär processmodell (exempel med en sinusfunktion)
-            private double ProcessModel(double state)
-            {
-                return Math.Sin(state);
-            }
-
-            // Derivatan av processmodellen (används som Jacobian)
-            private double ProcessModelJacobian(double state)
-            {
-                return Math.Cos(state); // Derivatan av sin(x) är cos(x)
-            }
-
-            // Mätmodell (vi antar att mätningen är linjär här, men den kan också vara icke-linjär)
-            private double MeasurementModel(double state)
-            {
-                return state; //sensor input
-            }
-
-            // Derivatan av mätmodellen (Jacobian)
-            private double MeasurementModelJacobian(double state)
-            {
-                return 1.0; // Derivatan av en linjär funktion är konstant
-            }
+            public Func<double, double> ProcessModel { get; set; }
+            public Func<double, double> MeasurementModel { get; set; }
 
             public double Update(double measurement)
             {
-                // Förutsägelse
-                double predictedState = ProcessModel(_state);
-                double jacobianProcessModel = ProcessModelJacobian(_state);
-                double predictedErrorCovariance = jacobianProcessModel * _errorCovariance * jacobianProcessModel + _processNoise;
+                // Generate sigma points
+                double[] sigmaPoints = GenerateSigmaPoints(_state, _errorCovariance);
 
-                // Kalman Gain
-                double jacobianMeasurementModel = MeasurementModelJacobian(predictedState);
-                double kalmanGain = predictedErrorCovariance * jacobianMeasurementModel /
-                                    (jacobianMeasurementModel * predictedErrorCovariance * jacobianMeasurementModel + _measurementNoise);
+                // Predict sigma points
+                double[] predictedSigmaPoints = new double[sigmaPoints.Length];
+                for (int i = 0; i < sigmaPoints.Length; i++)
+                {
+                    predictedSigmaPoints[i] = ProcessModel(sigmaPoints[i]);
+                }
 
-                // Uppdatering med mätningen
-                _state = predictedState + kalmanGain * (measurement - MeasurementModel(predictedState));
-                _errorCovariance = (1 - kalmanGain * jacobianMeasurementModel) * predictedErrorCovariance;
+                // Calculate predicted mean and covariance
+                double predictedMean, predictedCovariance;
+                CalculateMeanAndCovariance(predictedSigmaPoints, out predictedMean, out predictedCovariance);
+
+                // Add process noise
+                predictedCovariance += _processNoise;
+
+                // Transform sigma points through measurement model
+                double[] measurementSigmaPoints = new double[sigmaPoints.Length];
+                for (int i = 0; i < sigmaPoints.Length; i++)
+                {
+                    measurementSigmaPoints[i] = MeasurementModel(predictedSigmaPoints[i]);
+                }
+
+                // Calculate predicted measurement mean and covariance
+                double predictedMeasurementMean, predictedMeasurementCovariance;
+                CalculateMeanAndCovariance(measurementSigmaPoints, out predictedMeasurementMean, out predictedMeasurementCovariance);
+
+                // Add measurement noise
+                predictedMeasurementCovariance += _measurementNoise;
+
+                // Calculate cross covariance between state and measurement
+                double crossCovariance = 0;
+                for (int i = 0; i < sigmaPoints.Length; i++)
+                {
+                    crossCovariance += (predictedSigmaPoints[i] - predictedMean) * (measurementSigmaPoints[i] - predictedMeasurementMean);
+                }
+                crossCovariance /= sigmaPoints.Length;
+
+                // Calculate Kalman Gain
+                double kalmanGain = crossCovariance / predictedMeasurementCovariance;
+
+                // Update state and covariance with the measurement
+                _state = predictedMean + kalmanGain * (measurement - predictedMeasurementMean);
+                _errorCovariance = predictedCovariance - kalmanGain * crossCovariance * kalmanGain;
 
                 return _state;
             }
 
+            private double[] GenerateSigmaPoints(double state, double covariance)
+            {
+                double sqrtCovariance = Math.Sqrt(covariance);
+                return new double[] { state, state + sqrtCovariance, state - sqrtCovariance };
+            }
 
+            private void CalculateMeanAndCovariance(double[] points, out double mean, out double covariance)
+            {
+                mean = 0;
+                covariance = 0;
 
-    private List<Vector2> _mockupSinData;
+                for (int i = 0; i < points.Length; i++)
+                {
+                    mean += points[i];
+                }
+                mean /= points.Length;
 
-    public Program()
-    {
-        Random random = new Random();
-        int numberOfPoints = 100; // Antal punkter att generera
-        double noiseLevel = 0.1; // Justera detta för att kontrollera brusnivån
-
-        _mockupSinData = Enumerable.Range(0, numberOfPoints)
-            .Select(x => new Vector2(
-                x, // X-värdet är bara en linjär sekvens
-                (float)(Math.Sin(x * 0.1) + (random.NextDouble() * 2 - 1) * noiseLevel) // Y-värdet är sinus plus brus
-            ))
-            .ToList();
-    }
+                for (int i = 0; i < points.Length; i++)
+                {
+                    covariance += (points[i] - mean) * (points[i] - mean);
+                }
+                covariance /= points.Length;
+            }
+        }
