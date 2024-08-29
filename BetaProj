@@ -1,102 +1,62 @@
-        public class UnscentedKalmanFilter
+public class PlateauDetector : IPlateauDetector
+{
+    public double MinPlateauLength { get; set; }
+    public double PlateauStartMinX { get; set; }
+    public double PlateauMinY { get; set; }
+    public bool XFlipped { get; set; }
+    public bool YFlipped { get; set; }
+
+    private List<Vector2> _points;
+    private Vector2 _currentPlateauStart;
+
+    public PlateauDetector()
+    {
+        _points = new List<Vector2>();
+        _currentPlateauStart = Vector2.Zero;
+    }
+
+    public bool Update(Vector2 newPoint, out Vector2 startOfPlateau)
+    {
+        // Lägg till den nya punkten till listan av punkter
+        _points.Add(newPoint);
+
+        // Om vi har tillräckligt många punkter, beräkna kovariansen
+        if (_points.Count >= 2)
         {
-            private double _state; // State (e.g., position)
-            private double _errorCovariance; // Error covariance (uncertainty in state)
-            private readonly double _processNoise;
-            private readonly double _measurementNoise;
+            double covariance = CalculateCovariance(_points);
 
-            //Sigma Points Generation: The GenerateSigmaPoints function creates sigma points that represent the distribution of the state.
-
-            //Unscented Transform: Sigma points are transformed through the process and measurement models, and the predicted mean and covariance are calculated.
-
-            //Kalman Gain: It calculates the Kalman Gain using the cross-covariance between the state and the measurement.
-
-            // State Update: The state and covariance are updated based on the measurement using the Kalman Gain.
-
-            public UnscentedKalmanFilter(double initialState, double initialErrorCovariance, double processNoise, double measurementNoise)
+            // Kontrollera om kovariansen är nära noll, vilket skulle indikera en platå
+            if (Math.Abs(covariance) < 0.001) // Threshold för att detektera platå
             {
-                _state = initialState;
-                _errorCovariance = initialErrorCovariance;
-                _processNoise = processNoise;
-                _measurementNoise = measurementNoise;
-            }
-
-
-            public Func<double, double> ProcessModel { get; set; }
-            public Func<double, double> MeasurementModel { get; set; }
-
-            public double Update(double measurement)
-            {
-                // Generate sigma points
-                double[] sigmaPoints = GenerateSigmaPoints(_state, _errorCovariance);
-
-                // Predict sigma points
-                double[] predictedSigmaPoints = new double[sigmaPoints.Length];
-                for (int i = 0; i < sigmaPoints.Length; i++)
+                // Kontrollera om x-intervallet är tillräckligt stort för att vara en platå
+                if (Math.Abs(_points.Last().X - _points.First().X) >= MinPlateauLength &&
+                    _points.First().X >= PlateauStartMinX &&
+                    _points.All(p => p.Y >= PlateauMinY))
                 {
-                    predictedSigmaPoints[i] = ProcessModel(sigmaPoints[i]);
+                    startOfPlateau = _currentPlateauStart = _points.First();
+                    return true;
                 }
-
-                // Calculate predicted mean and covariance
-                double predictedMean, predictedCovariance;
-                CalculateMeanAndCovariance(predictedSigmaPoints, out predictedMean, out predictedCovariance);
-
-                // Add process noise
-                predictedCovariance += _processNoise;
-
-                // Transform sigma points through measurement model
-                double[] measurementSigmaPoints = new double[sigmaPoints.Length];
-                for (int i = 0; i < sigmaPoints.Length; i++)
-                {
-                    measurementSigmaPoints[i] = MeasurementModel(predictedSigmaPoints[i]);
-                }
-
-                // Calculate predicted measurement mean and covariance
-                double predictedMeasurementMean, predictedMeasurementCovariance;
-                CalculateMeanAndCovariance(measurementSigmaPoints, out predictedMeasurementMean, out predictedMeasurementCovariance);
-
-                // Add measurement noise
-                predictedMeasurementCovariance += _measurementNoise;
-
-                // Calculate cross covariance between state and measurement
-                double crossCovariance = 0;
-                for (int i = 0; i < sigmaPoints.Length; i++)
-                {
-                    crossCovariance += (predictedSigmaPoints[i] - predictedMean) * (measurementSigmaPoints[i] - predictedMeasurementMean);
-                }
-                crossCovariance /= sigmaPoints.Length;
-
-                // Calculate Kalman Gain
-                double kalmanGain = crossCovariance / predictedMeasurementCovariance;
-
-                // Update state and covariance with the measurement
-                _state = predictedMean + kalmanGain * (measurement - predictedMeasurementMean);
-                _errorCovariance = predictedCovariance - kalmanGain * crossCovariance * kalmanGain;
-
-                return _state;
-            }
-
-            private double[] GenerateSigmaPoints(double state, double covariance)
-            {
-                double sqrtCovariance = Math.Sqrt(covariance);
-                return new double[] { state, state + sqrtCovariance, state - sqrtCovariance };
-            }
-
-            private void CalculateMeanAndCovariance(double[] points, out double mean, out double covariance)
-            {
-                mean = 0;
-                covariance = 0;
-
-                for (int i = 0; i < points.Length; i++)
-                {
-                    mean += points[i];
-                }
-                mean /= points.Length;
-
-                for (int i = 0; i < points.Length; i++)
-                {
-                    covariance += (points[i] - mean) * (points[i] - mean);
-                }
-                covariance /= points.Length;
             }
         }
+
+        startOfPlateau = Vector2.Zero;
+        return false;
+    }
+
+    public void Reset()
+    {
+        _points.Clear();
+        _currentPlateauStart = Vector2.Zero;
+    }
+
+    private double CalculateCovariance(List<Vector2> points)
+    {
+        int n = points.Count;
+        double meanX = points.Average(p => p.X);
+        double meanY = points.Average(p => p.Y);
+
+        double covariance = points.Sum(p => (p.X - meanX) * (p.Y - meanY)) / (n - 1);
+
+        return covariance;
+    }
+}
