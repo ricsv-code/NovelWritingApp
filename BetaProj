@@ -60,3 +60,77 @@ public class PlateauDetector : IPlateauDetector
         return covariance;
     }
 }
+
+
+
+public class GraphPlotter
+{
+    private double _maxX;
+    private double _maxY;
+    private double _canvasWidth;
+    private double _canvasHeight;
+    private Canvas _canvas;
+
+    public GraphPlotter(double maxX, double maxY, double canvasWidth, double canvasHeight)
+    {
+        _maxX = maxX;
+        _maxY = maxY;
+        _canvasWidth = canvasWidth;
+        _canvasHeight = canvasHeight;
+        _canvas = new Canvas
+        {
+            Width = canvasWidth,
+            Height = canvasHeight,
+            Background = Brushes.White
+        };
+    }
+
+    private double NormalizeX(double x)
+    {
+        return (x / _maxX) * _canvasWidth;
+    }
+
+    private double NormalizeY(double y)
+    {
+        return _canvasHeight - (y / _maxY) * _canvasHeight; // Inverterar y-värdet för att passa Canvasens koordinatsystem
+    }
+
+    public Canvas UpdatePlot(List<Vector2D> pointsOne, List<Vector2D> pointsTwo, List<Vector2D> pointsThree, List<Vector2D> pointsFour)
+    {
+        // Sätt startindex för att endast rita nya punkter
+        int startIndex1 = _canvas.Children.Count / 4;
+        int startIndex2 = startIndex1;
+        int startIndex3 = startIndex1;
+        int startIndex4 = startIndex1;
+
+        // Rita nya punkter för varje lista
+        DrawPoints(pointsOne, startIndex1, Brushes.Red);
+        DrawPoints(pointsTwo, startIndex2, Brushes.Green);
+        DrawPoints(pointsThree, startIndex3, Brushes.Blue);
+        DrawPoints(pointsFour, startIndex4, Brushes.Purple);
+
+        return _canvas;
+    }
+
+    private void DrawPoints(List<Vector2D> points, int startIndex, Brush color)
+    {
+        for (int i = startIndex; i < points.Count; i++)
+        {
+            var point = points[i];
+            double x = NormalizeX(point.X);
+            double y = NormalizeY(point.Y);
+
+            var ellipse = new Ellipse
+            {
+                Width = 4,
+                Height = 4,
+                Fill = color
+            };
+
+            Canvas.SetLeft(ellipse, x - 2);
+            Canvas.SetTop(ellipse, y - 2);
+
+            _canvas.Children.Add(ellipse);
+        }
+    }
+}
